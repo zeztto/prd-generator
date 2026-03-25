@@ -23,6 +23,7 @@ export default function HeroSection() {
 
             <div className="mt-8 flex flex-col items-center gap-3 md:mt-10 lg:items-start">
               <Button
+                nativeButton={false}
                 size="lg"
                 className="gap-2 text-base"
                 render={<Link href="/login" />}

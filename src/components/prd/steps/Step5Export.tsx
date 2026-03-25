@@ -155,11 +155,11 @@ export function Step5Export() {
 
       {/* CTA */}
       <div className="flex flex-col sm:flex-row gap-3 pt-4">
-        <Button variant="outline" size="lg" className="flex-1" render={<Link href={ROUTES.DASHBOARD} />}>
+        <Button nativeButton={false} variant="outline" size="lg" className="flex-1" render={<Link href={ROUTES.DASHBOARD} />}>
           <ArrowLeft className="size-4" data-icon="inline-start" />
           대시보드로 돌아가기
         </Button>
-        <Button size="lg" className="flex-1" render={<Link href={ROUTES.PRD_NEW} />}>
+        <Button nativeButton={false} size="lg" className="flex-1" render={<Link href={ROUTES.PRD_NEW} />}>
           <Plus className="size-4" data-icon="inline-start" />
           새 PRD 작성
         </Button>

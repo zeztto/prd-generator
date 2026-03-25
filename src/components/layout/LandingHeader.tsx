@@ -32,7 +32,7 @@ export default function LandingHeader() {
               {item.label}
             </a>
           ))}
-          <Button size="sm" render={<Link href="/login" />}>
+          <Button nativeButton={false} size="sm" render={<Link href="/login" />}>
             시작하기
           </Button>
         </nav>
@@ -62,7 +62,7 @@ export default function LandingHeader() {
                 {item.label}
               </a>
             ))}
-            <Button className="mt-2 w-full" size="sm" render={<Link href="/login" />}>
+            <Button nativeButton={false} className="mt-2 w-full" size="sm" render={<Link href="/login" />}>
               시작하기
             </Button>
           </nav>

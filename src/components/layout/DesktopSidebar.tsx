@@ -72,6 +72,7 @@ export function DesktopSidebar() {
         {navItems.map((item) => (
           <Button
             key={item.href}
+            nativeButton={false}
             render={<Link href={item.href} />}
             variant="ghost"
             className={cn(
@@ -86,6 +87,7 @@ export function DesktopSidebar() {
 
         {/* 새 PRD 작성 CTA */}
         <Button
+          nativeButton={false}
           render={<Link href={ROUTES.PRD_NEW} />}
           className="mt-2 w-full gap-2"
         >
@@ -115,6 +117,7 @@ export function DesktopSidebar() {
             {recentPrds.map((prd) => (
               <Button
                 key={prd.id}
+                nativeButton={false}
                 render={<Link href={ROUTES.PRD_EDIT(prd.id)} />}
                 variant="ghost"
                 className={cn(
@@ -148,6 +151,7 @@ export function DesktopSidebar() {
 
         {/* 설정 */}
         <Button
+          nativeButton={false}
           render={<Link href={ROUTES.SETTINGS} />}
           variant="ghost"
           className={cn(

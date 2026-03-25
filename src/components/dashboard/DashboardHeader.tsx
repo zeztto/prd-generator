@@ -76,6 +76,7 @@ export function DashboardHeader({
 
         {/* 새 PRD 작성 (데스크톱만 표시) */}
         <Button
+          nativeButton={false}
           render={<Link href={ROUTES.PRD_NEW} />}
           size="sm"
           className="hidden gap-1.5 md:inline-flex"

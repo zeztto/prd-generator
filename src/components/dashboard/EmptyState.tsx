@@ -17,7 +17,7 @@ export function EmptyState() {
       <p className="mb-8 max-w-sm text-sm text-muted-foreground">
         첫 PRD를 작성하고 전문가 수준의 문서를 만들어보세요
       </p>
-      <Button render={<Link href={ROUTES.PRD_NEW} />} size="lg" className="gap-2">
+      <Button nativeButton={false} render={<Link href={ROUTES.PRD_NEW} />} size="lg" className="gap-2">
         <PlusCircle className="size-4" />
         첫 PRD 작성하기
       </Button>

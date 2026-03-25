@@ -18,6 +18,7 @@ export default function CTASection() {
           30분이면 충분해요. 완전 무료입니다.
         </p>
         <Button
+          nativeButton={false}
           size="lg"
           variant="secondary"
           className="mt-8 gap-2 text-base"
