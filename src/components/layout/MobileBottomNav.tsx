@@ -2,27 +2,27 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FileText, PlusCircle, LayoutTemplate, Settings } from 'lucide-react';
+import { LayoutDashboard, Plus, BookTemplate, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ROUTES } from '@/constants/routes';
 
 const navItems = [
   {
     href: ROUTES.DASHBOARD,
-    label: '내 PRD',
-    icon: FileText,
+    label: '대시보드',
+    icon: LayoutDashboard,
     matchExact: true,
   },
   {
     href: ROUTES.PRD_NEW,
     label: '새 PRD',
-    icon: PlusCircle,
+    icon: Plus,
     matchExact: true,
   },
   {
     href: '#templates',
     label: '템플릿',
-    icon: LayoutTemplate,
+    icon: BookTemplate,
     disabled: true,
     matchExact: false,
   },
@@ -38,8 +38,8 @@ export function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 h-14 border-t bg-card/95 backdrop-blur-sm pb-[env(safe-area-inset-bottom)] xl:hidden">
-      <div className="flex h-full items-center justify-around">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 shadow-[0_-1px_3px_rgba(0,0,0,0.05)] backdrop-blur-md pb-[env(safe-area-inset-bottom)] xl:hidden">
+      <div className="flex h-14 items-center justify-around">
         {navItems.map((item) => {
           const isActive = item.matchExact
             ? pathname === item.href
@@ -49,10 +49,10 @@ export function MobileBottomNav() {
             return (
               <div
                 key={item.href}
-                className="flex flex-1 flex-col items-center gap-0.5 py-1 text-muted-foreground/50"
+                className="flex flex-1 flex-col items-center gap-0.5 py-1 text-muted-foreground/40"
               >
                 <item.icon className="size-5" />
-                <span className="text-[10px]">{item.label}</span>
+                <span className="text-[10px] font-medium">{item.label}</span>
               </div>
             );
           }
@@ -64,12 +64,14 @@ export function MobileBottomNav() {
               className={cn(
                 'flex flex-1 flex-col items-center gap-0.5 py-1 transition-colors',
                 isActive
-                  ? 'text-primary'
+                  ? 'text-brand'
                   : 'text-muted-foreground hover:text-foreground',
               )}
             >
-              <item.icon className="size-5" />
-              <span className="text-[10px]">{item.label}</span>
+              <item.icon className={cn('size-5', isActive && 'stroke-[2.5]')} />
+              <span className={cn('text-[10px]', isActive ? 'font-semibold' : 'font-medium')}>
+                {item.label}
+              </span>
             </Link>
           );
         })}

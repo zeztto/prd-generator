@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Menu, FileText } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { useUIStore } from '@/stores/ui.store';
 import { useAuth } from '@/hooks/useAuth';
@@ -30,7 +30,7 @@ export function ResponsiveShell({ children }: { children: React.ReactNode }) {
     return (
       <div className="flex h-dvh">
         <DesktopSidebar />
-        <main className="flex-1 overflow-y-auto">{children}</main>
+        <main className="flex-1 overflow-y-auto bg-background">{children}</main>
       </div>
     );
   }
@@ -38,8 +38,8 @@ export function ResponsiveShell({ children }: { children: React.ReactNode }) {
   // 태블릿 + 모바일 - 상단 헤더 + Sheet 사이드바 + 바텀 네비(모바일만)
   return (
     <div className="flex h-dvh flex-col">
-      {/* 상단 헤더 */}
-      <header className="flex h-14 items-center justify-between border-b bg-card px-4">
+      {/* 상단 헤더 - 심플 */}
+      <header className="flex h-13 items-center justify-between border-b border-border bg-background/95 px-4 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
@@ -50,10 +50,11 @@ export function ResponsiveShell({ children }: { children: React.ReactNode }) {
           </Button>
           <Link
             href={ROUTES.DASHBOARD}
-            className="flex items-center gap-1.5 font-semibold"
+            className="flex items-center"
           >
-            <FileText className="size-5 text-primary" />
-            <span className="text-sm"><span className="font-bold">prd</span><span className="text-primary">.ai</span></span>
+            <span className="text-base font-bold tracking-tight">
+              prd<span className="text-brand">.ai</span>
+            </span>
           </Link>
         </div>
 
@@ -62,7 +63,7 @@ export function ResponsiveShell({ children }: { children: React.ReactNode }) {
             {user?.profileImage && (
               <AvatarImage src={user.profileImage} alt={user.name} />
             )}
-            <AvatarFallback>
+            <AvatarFallback className="bg-brand/10 text-brand text-xs font-medium">
               {user?.name?.charAt(0) ?? '?'}
             </AvatarFallback>
           </Avatar>
@@ -75,7 +76,6 @@ export function ResponsiveShell({ children }: { children: React.ReactNode }) {
           <SheetHeader className="sr-only">
             <SheetTitle>메뉴</SheetTitle>
           </SheetHeader>
-          {/* DesktopSidebar 재활용, 클릭 시 Sheet 닫기 */}
           <div onClick={() => setMobileMenuOpen(false)} className="h-full">
             <DesktopSidebar />
           </div>
@@ -83,7 +83,7 @@ export function ResponsiveShell({ children }: { children: React.ReactNode }) {
       </Sheet>
 
       {/* 메인 콘텐츠 */}
-      <main className={`flex-1 overflow-y-auto ${isMobile ? 'pb-14' : ''}`}>
+      <main className={`flex-1 overflow-y-auto bg-background ${isMobile ? 'pb-14' : ''}`}>
         {children}
       </main>
 

@@ -37,6 +37,7 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
           type="email"
           placeholder="name@example.com"
           autoComplete="email"
+          className="h-11 rounded-lg"
           {...register("email")}
         />
         {errors.email && (
@@ -52,6 +53,7 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
           type="password"
           placeholder="비밀번호를 입력하세요"
           autoComplete="current-password"
+          className="h-11 rounded-lg"
           {...register("password")}
         />
         {errors.password && (
@@ -65,14 +67,18 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
       <div className="text-right">
         <a
           href="#"
-          className="text-sm text-muted-foreground hover:text-foreground"
+          className="text-sm text-muted-foreground transition-colors hover:text-brand"
         >
           비밀번호를 잊으셨나요?
         </a>
       </div>
 
       {/* 로그인 버튼 */}
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        className="h-11 w-full bg-brand text-brand-foreground hover:bg-brand/90"
+        disabled={isSubmitting}
+      >
         {isSubmitting ? "로그인 중..." : "로그인"}
       </Button>
     </form>

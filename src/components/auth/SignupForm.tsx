@@ -63,6 +63,7 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
           type="text"
           placeholder="홍길동"
           autoComplete="name"
+          className="h-11 rounded-lg"
           {...register("name")}
         />
         {errors.name && (
@@ -78,6 +79,7 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
           type="email"
           placeholder="name@example.com"
           autoComplete="email"
+          className="h-11 rounded-lg"
           {...register("email")}
         />
         {errors.email && (
@@ -93,6 +95,7 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
           type="password"
           placeholder="8자 이상 입력하세요"
           autoComplete="new-password"
+          className="h-11 rounded-lg"
           {...register("password")}
         />
         {errors.password && (
@@ -111,6 +114,7 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
           type="password"
           placeholder="비밀번호를 다시 입력하세요"
           autoComplete="new-password"
+          className="h-11 rounded-lg"
           {...register("passwordConfirm")}
         />
         {errors.passwordConfirm && (
@@ -121,7 +125,11 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
       </div>
 
       {/* 가입 버튼 */}
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        className="h-11 w-full bg-brand text-brand-foreground hover:bg-brand/90"
+        disabled={isSubmitting}
+      >
         {isSubmitting ? "가입 중..." : "가입하기"}
       </Button>
     </form>

@@ -1,16 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { PlusCircle, Filter } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuLabel,
-} from '@/components/ui/dropdown-menu';
+import { cn } from '@/lib/utils';
 import { ROUTES } from '@/constants/routes';
 import { DocStatus } from '@/types/prd.types';
 
@@ -33,57 +26,44 @@ export function DashboardHeader({
   onStatusFilterChange,
   totalCount,
 }: DashboardHeaderProps) {
-  const currentFilterLabel =
-    STATUS_FILTER_OPTIONS.find((o) => o.value === statusFilter)?.label ?? '전체';
-
   return (
-    <div className="flex items-center justify-between">
-      <div>
-        <h1 className="text-xl font-semibold md:text-2xl">내 PRD</h1>
-        <p className="mt-0.5 text-sm text-muted-foreground">
-          총 {totalCount}개의 문서
-        </p>
-      </div>
+    <div className="space-y-4">
+      {/* 제목 + 새 PRD 버튼 */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">내 PRD</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            총 {totalCount}개의 문서
+          </p>
+        </div>
 
-      <div className="flex items-center gap-2">
-        {/* 상태 필터 */}
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button variant="outline" size="sm" className="gap-1.5" />
-            }
-          >
-            <Filter className="size-3.5" />
-            <span className="hidden sm:inline">{currentFilterLabel}</span>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>상태 필터</DropdownMenuLabel>
-            <DropdownMenuRadioGroup
-              value={statusFilter}
-              onValueChange={onStatusFilterChange}
-            >
-              {STATUS_FILTER_OPTIONS.map((option) => (
-                <DropdownMenuRadioItem
-                  key={option.value}
-                  value={option.value}
-                >
-                  {option.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* 새 PRD 작성 (데스크톱만 표시) */}
         <Button
           nativeButton={false}
           render={<Link href={ROUTES.PRD_NEW} />}
-          size="sm"
-          className="hidden gap-1.5 md:inline-flex"
+          className="gap-1.5 bg-brand text-brand-foreground hover:bg-brand/90"
         >
-          <PlusCircle className="size-3.5" />
-          새 PRD 작성
+          <Plus className="size-4" />
+          <span className="hidden sm:inline">새 PRD 작성</span>
+          <span className="sm:hidden">새 PRD</span>
         </Button>
+      </div>
+
+      {/* 필터 탭/칩 */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+        {STATUS_FILTER_OPTIONS.map((option) => (
+          <button
+            key={option.value}
+            onClick={() => onStatusFilterChange(option.value)}
+            className={cn(
+              'inline-flex items-center rounded-lg px-3 py-1.5 text-sm font-medium transition-all whitespace-nowrap',
+              statusFilter === option.value
+                ? 'bg-foreground text-background shadow-sm'
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+            )}
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
     </div>
   );

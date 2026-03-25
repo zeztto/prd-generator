@@ -16,7 +16,6 @@ export default function SignupPage() {
     provider: "google" | "github" | "kakao",
   ) => {
     if (provider === "kakao") {
-      // TODO: 카카오 소셜 로그인 구현
       console.log("Kakao login not yet supported");
       return;
     }
@@ -41,14 +40,21 @@ export default function SignupPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="text-center">
-        <h1 className="text-2xl font-bold">회원가입</h1>
+        <h1 className="text-2xl font-bold tracking-tight">
+          무료로 시작하세요
+        </h1>
+        <p className="mt-1.5 text-sm text-muted-foreground">
+          계정을 만들고 PRD 작성을 시작하세요
+        </p>
       </div>
 
       <SocialLoginButtons onSocialLogin={handleSocialLogin} />
 
       <div className="flex items-center gap-3">
         <Separator className="flex-1" />
-        <span className="text-xs text-muted-foreground">또는</span>
+        <span className="text-xs text-muted-foreground">
+          또는 이메일로 가입
+        </span>
         <Separator className="flex-1" />
       </div>
 
@@ -58,7 +64,7 @@ export default function SignupPage() {
         이미 계정이 있으신가요?{" "}
         <Link
           href="/login"
-          className="font-medium text-foreground underline-offset-4 hover:underline"
+          className="font-medium text-brand underline-offset-4 hover:underline"
         >
           로그인
         </Link>

@@ -20,7 +20,6 @@ export default function DashboardPage() {
   useEffect(() => {
     if (prdList.length === 0) {
       setListLoading(true);
-      // 네트워크 로딩 시뮬레이션
       const timer = setTimeout(() => {
         setPRDList(MOCK_PRD_LIST);
         setListLoading(false);
@@ -38,7 +37,7 @@ export default function DashboardPage() {
   const isEmpty = !isListLoading && prdList.length === 0;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 md:px-6 md:py-8">
+    <div className="mx-auto max-w-6xl px-4 py-8 md:px-8 md:py-10">
       <DashboardHeader
         statusFilter={statusFilter}
         onStatusFilterChange={setStatusFilter}

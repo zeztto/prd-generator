@@ -10,12 +10,12 @@ export default function SocialLoginButtons({
   onSocialLogin,
 }: SocialLoginButtonsProps) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-2.5">
       {/* Google */}
       <Button
         type="button"
         variant="outline"
-        className="w-full gap-2"
+        className="h-11 w-full gap-2.5 rounded-lg border-border/80 font-medium transition-colors hover:bg-muted/60"
         onClick={() => onSocialLogin("google")}
       >
         <svg
@@ -46,8 +46,7 @@ export default function SocialLoginButtons({
       {/* GitHub */}
       <Button
         type="button"
-        variant="outline"
-        className="w-full gap-2"
+        className="h-11 w-full gap-2.5 rounded-lg bg-[#24292e] font-medium text-white transition-colors hover:bg-[#24292e]/90"
         onClick={() => onSocialLogin("github")}
       >
         <svg
@@ -64,7 +63,7 @@ export default function SocialLoginButtons({
       {/* 카카오 */}
       <Button
         type="button"
-        className="w-full gap-2 bg-[#FEE500] text-[#191919] hover:bg-[#FEE500]/90"
+        className="h-11 w-full gap-2.5 rounded-lg bg-[#FEE500] font-medium text-[#191919] transition-colors hover:bg-[#FEE500]/85"
         onClick={() => onSocialLogin("kakao")}
       >
         <svg
