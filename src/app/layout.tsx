@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PRD 생성기 — 질문에 답하면 PRD가 완성됩니다",
+  title: "prd.ai — 질문에 답하면 PRD가 완성됩니다",
   description:
-    "단계별 질문과 AI 보강으로 누구나 전문가 수준의 PRD를 작성할 수 있습니다. 무료로 시작하세요.",
+    "PRD 작성이 처음이어도 괜찮아요. AI가 안내하는 질문에 답하면 전문가 수준의 PRD가 완성됩니다. prd.ai",
   keywords: ["PRD", "제품 요구사항 문서", "AI", "프로덕트 매니저", "기획서"],
 };
 

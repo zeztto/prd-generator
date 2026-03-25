@@ -206,7 +206,7 @@ export function generatePRDMarkdown(prd: Omit<PRDDocument, 'id' | 'authorId' | '
 
   sections.push('---');
   sections.push('');
-  sections.push(`*이 문서는 PRD 생성기로 작성되었습니다.*`);
+  sections.push(`*이 문서는 prd.ai로 작성되었습니다.*`);
 
   return sections.join('\n');
 }

@@ -17,8 +17,8 @@ export default function LandingHeader() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         {/* 로고 */}
-        <Link href="/" className="text-xl font-bold tracking-tight">
-          PRD 생성기
+        <Link href="/" className="text-xl tracking-tight">
+          <span className="font-bold">prd</span><span className="text-primary">.ai</span>
         </Link>
 
         {/* 데스크톱 네비게이션 */}

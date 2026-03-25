@@ -53,7 +53,7 @@ export function ResponsiveShell({ children }: { children: React.ReactNode }) {
             className="flex items-center gap-1.5 font-semibold"
           >
             <FileText className="size-5 text-primary" />
-            <span className="text-sm">PRD 생성기</span>
+            <span className="text-sm"><span className="font-bold">prd</span><span className="text-primary">.ai</span></span>
           </Link>
         </div>
 

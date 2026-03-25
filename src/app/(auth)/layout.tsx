@@ -9,9 +9,9 @@ export default function AuthLayout({
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-muted/50 to-background px-4 py-8">
       <Link
         href="/"
-        className="mb-8 text-2xl font-bold tracking-tight"
+        className="mb-8 text-2xl tracking-tight"
       >
-        PRD 생성기
+        <span className="font-bold">prd</span><span className="text-primary">.ai</span>
       </Link>
 
       <div className="w-full max-w-md rounded-xl border bg-card p-6 shadow-sm md:p-8">
