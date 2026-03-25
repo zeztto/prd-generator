@@ -20,11 +20,10 @@ const navItems = [
     matchExact: true,
   },
   {
-    href: '#templates',
+    href: ROUTES.TEMPLATES,
     label: '템플릿',
     icon: BookTemplate,
-    disabled: true,
-    matchExact: false,
+    matchExact: true,
   },
   {
     href: ROUTES.SETTINGS,
@@ -44,18 +43,6 @@ export function MobileBottomNav() {
           const isActive = item.matchExact
             ? pathname === item.href
             : pathname.startsWith(item.href);
-
-          if (item.disabled) {
-            return (
-              <div
-                key={item.href}
-                className="flex flex-1 flex-col items-center gap-0.5 py-1 text-muted-foreground/40"
-              >
-                <item.icon className="size-5" />
-                <span className="text-[10px] font-medium">{item.label}</span>
-              </div>
-            );
-          }
 
           return (
             <Link

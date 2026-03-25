@@ -37,11 +37,10 @@ export function DesktopSidebar() {
       active: pathname === ROUTES.DASHBOARD,
     },
     {
-      href: '#templates',
+      href: ROUTES.TEMPLATES,
       label: '템플릿',
       icon: BookTemplate,
-      active: false,
-      disabled: true,
+      active: pathname === ROUTES.TEMPLATES,
     },
   ];
 
@@ -80,22 +79,16 @@ export function DesktopSidebar() {
           <Button
             key={item.href}
             nativeButton={false}
-            render={item.disabled ? <span /> : <Link href={item.href} />}
+            render={<Link href={item.href} />}
             variant="ghost"
-            disabled={item.disabled}
             className={cn(
               'w-full justify-start gap-2.5 px-2.5 font-normal',
               item.active && 'bg-brand/10 text-brand font-medium',
-              !item.active && !item.disabled && 'text-sidebar-foreground',
+              !item.active && 'text-sidebar-foreground',
             )}
           >
             <item.icon className="size-4" />
             {item.label}
-            {item.disabled && (
-              <span className="ml-auto text-[10px] text-muted-foreground opacity-60">
-                곧 출시
-              </span>
-            )}
           </Button>
         ))}
       </nav>

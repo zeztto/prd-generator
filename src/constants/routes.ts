@@ -15,6 +15,9 @@ export const ROUTES = {
   PRD_EDIT: (id: string) => `/prd/${id}/edit` as const,
   PRD_VIEW: (id: string) => `/prd/${id}` as const,
 
+  // 템플릿
+  TEMPLATES: '/templates',
+
   // 설정
   SETTINGS: '/settings',
   PROFILE: '/settings/profile',
