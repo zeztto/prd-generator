@@ -76,7 +76,7 @@ export default function HowItWorks() {
               </div>
 
               {/* 카드 */}
-              <div className="mt-6 w-full rounded-2xl border border-border/60 bg-card p-6 text-center shadow-sm transition-all duration-300 hover:border-brand/20 hover:shadow-lg hover:shadow-brand/5 md:mx-4">
+              <div className="mt-6 w-full rounded-2xl border border-border/60 bg-card p-6 text-center shadow-sm transition-all duration-300 hover:border-brand/20 hover:shadow-lg hover:shadow-brand/5 md:mx-4 md:h-[220px]">
                 {/* 아이콘 */}
                 <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand/10">
                   <step.icon className="h-5 w-5 text-brand" />
