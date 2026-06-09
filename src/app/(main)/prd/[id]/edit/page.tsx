@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import { usePRDStore } from '@/stores/prd.store';
-import { mockPRDService } from '@/lib/mock/services/prd.service';
+import { prdService } from '@/lib/services/prd.service';
 import { StepWizard } from '@/components/prd/StepWizard';
 import { Loader2 } from 'lucide-react';
 
@@ -14,7 +14,6 @@ export default function PRDEditPage() {
 
   const currentPRDId = usePRDStore((s) => s.currentPRDId);
   const loadPRD = usePRDStore((s) => s.loadPRD);
-  const setCurrentPRDId = usePRDStore((s) => s.setCurrentPRDId);
   const setStep = usePRDStore((s) => s.setStep);
   const setSubStep = usePRDStore((s) => s.setSubStep);
 
@@ -35,7 +34,7 @@ export default function PRDEditPage() {
 
       setIsLoading(true);
       try {
-        const prd = await mockPRDService.getById(id);
+        const prd = await prdService.getById(id);
         loadPRD(prd);
 
         // URL 파라미터에서 스텝 복원
@@ -43,7 +42,7 @@ export default function PRDEditPage() {
         const subParam = searchParams.get('sub');
         if (stepParam) setStep(parseInt(stepParam, 10));
         if (subParam) setSubStep(parseInt(subParam, 10));
-      } catch (err) {
+      } catch {
         setError('PRD를 불러올 수 없습니다.');
       } finally {
         setIsLoading(false);

@@ -21,7 +21,7 @@ export interface AuthService {
   signup(data: SignupData): Promise<AuthResponse>;
   logout(): Promise<void>;
   completeOnboarding(data: OnboardingData): Promise<User>;
-  getCurrentUser(): Promise<User>;
+  getCurrentUser(): Promise<User | null>;
 }
 
 // ── PRD 서비스 인터페이스 ──

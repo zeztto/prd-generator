@@ -12,15 +12,26 @@ export default function SignupPage() {
   const signup = useAuthStore((s) => s.signup);
   const loginWithSocial = useAuthStore((s) => s.loginWithSocial);
 
+  const routeAfterAuth = (isOnboarded: boolean) => {
+    router.push(isOnboarded ? "/dashboard" : "/onboarding");
+  };
+
   const handleSocialLogin = async (
     provider: "google" | "github" | "kakao",
   ) => {
     if (provider === "kakao") {
-      console.log("Kakao login not yet supported");
+      window.alert("카카오 로그인은 아직 지원하지 않습니다.");
       return;
     }
-    await loginWithSocial(provider);
-    router.push("/onboarding");
+
+    try {
+      const user = await loginWithSocial(provider);
+      routeAfterAuth(user.isOnboarded);
+    } catch (error) {
+      window.alert(
+        error instanceof Error ? error.message : "소셜 로그인에 실패했습니다.",
+      );
+    }
   };
 
   const handleSubmit = async (data: {
@@ -28,13 +39,19 @@ export default function SignupPage() {
     email: string;
     password: string;
   }) => {
-    await signup({
-      name: data.name,
-      email: data.email,
-      password: data.password,
-      confirmPassword: data.password,
-    });
-    router.push("/onboarding");
+    try {
+      const user = await signup({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        confirmPassword: data.password,
+      });
+      routeAfterAuth(user.isOnboarded);
+    } catch (error) {
+      window.alert(
+        error instanceof Error ? error.message : "회원가입에 실패했습니다.",
+      );
+    }
   };
 
   return (

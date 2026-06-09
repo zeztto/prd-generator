@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react';
 
-import { mockAIService } from '@/lib/mock/services/ai.service';
+import { aiService } from '@/lib/services/ai.service';
 
 interface UseMockAIReturn {
   isLoading: boolean;
@@ -35,7 +35,7 @@ export function useMockAI(): UseMockAIReturn {
       setResult(null);
 
       try {
-        const enhanced = await mockAIService.enhance(sectionType, content);
+        const enhanced = await aiService.enhance(sectionType, content);
 
         // 타이핑 효과 시뮬레이션
         return new Promise<string>((resolve) => {

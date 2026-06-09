@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const { section, content } = await request.json();
 
-    if (!section || !content) {
+    if (!section || typeof content !== 'string') {
       return NextResponse.json(
         { error: '섹션과 내용을 모두 입력해주세요.' },
         { status: 400 }

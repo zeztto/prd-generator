@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import { aiService } from '@/lib/services/ai.service';
 import { usePRDStore } from '@/stores/prd.store';
-import { mockAIService } from '@/lib/mock/services/ai.service';
 import { QualityScoreChart } from '@/components/prd/QualityScoreChart';
 import { ReviewCard } from '@/components/prd/cards/ReviewCard';
-import type { PRDDocument, ReviewItem } from '@/types/prd.types';
+import type { PRDDocument } from '@/types/prd.types';
 
 export function Step3AIReview() {
   const reviewResult = usePRDStore((s) => s.reviewResult);
@@ -36,7 +36,7 @@ export function Step3AIReview() {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      const result = await mockAIService.review(fullPRD);
+      const result = await aiService.review(fullPRD);
       setReviewResult(result);
     } finally {
       setIsReviewing(false);

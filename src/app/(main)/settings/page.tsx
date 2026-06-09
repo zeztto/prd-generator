@@ -35,8 +35,8 @@ export default function SettingsPage() {
   const logout = useAuthStore((s) => s.logout);
   const router = useRouter();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     router.push("/login");
   };
 

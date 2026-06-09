@@ -12,6 +12,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { ROUTES } from '@/constants/routes';
+import { prdService } from '@/lib/services/prd.service';
+import { usePRDStore } from '@/stores/prd.store';
 import { DocStatus } from '@/types/prd.types';
 import type { PRDSummary } from '@/types/prd.types';
 import { formatRelativeTime } from '@/lib/utils/format';
@@ -59,10 +61,39 @@ interface PRDCardProps {
 
 export function PRDCard({ prd }: PRDCardProps) {
   const router = useRouter();
+  const prdList = usePRDStore((s) => s.prdList);
+  const setPRDList = usePRDStore((s) => s.setPRDList);
   const statusConfig = STATUS_CONFIG[prd.status];
 
   const handleClick = () => {
     router.push(ROUTES.PRD_EDIT(prd.id));
+  };
+
+  const handleDuplicate = async () => {
+    const duplicated = await prdService.duplicate(prd.id);
+    setPRDList([
+      {
+        id: duplicated.id,
+        title: duplicated.title,
+        description: duplicated.description,
+        status: duplicated.status,
+        qualityScore: duplicated.qualityScore,
+        projectType: duplicated.projectSetup.projectType,
+        createdAt: duplicated.createdAt,
+        updatedAt: duplicated.updatedAt,
+      },
+      ...prdList,
+    ]);
+  };
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm('이 PRD를 삭제하시겠습니까?');
+    if (!confirmed) {
+      return;
+    }
+
+    await prdService.delete(prd.id);
+    setPRDList(prdList.filter((item) => item.id !== prd.id));
   };
 
   return (
@@ -96,12 +127,12 @@ export function PRDCard({ prd }: PRDCardProps) {
               <Pencil className="size-4" />
               편집
             </DropdownMenuItem>
-            <DropdownMenuItem className="gap-2">
+            <DropdownMenuItem className="gap-2" onSelect={() => void handleDuplicate()}>
               <Copy className="size-4" />
               복제
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2" variant="destructive">
+            <DropdownMenuItem className="gap-2" variant="destructive" onSelect={() => void handleDelete()}>
               <Trash2 className="size-4" />
               삭제
             </DropdownMenuItem>

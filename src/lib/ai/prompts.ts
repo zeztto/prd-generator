@@ -12,6 +12,10 @@ PRD(제품 요구사항 문서) 작성을 돕는 것이 임무입니다.
 - Markdown 형식으로 출력합니다
 - 구조적이고 읽기 쉽게 작성합니다`;
 
+function stringifyContext(value: unknown) {
+  return JSON.stringify(value, null, 2);
+}
+
 export function getEnhancePrompt(section: string, content: string): string {
   const sectionNames: Record<string, string> = {
     background_currentSituation: '배경 - 현재 상황',
@@ -52,7 +56,8 @@ ${goals}
     "name": "지표명",
     "currentValue": "현재 추정값 (예시)",
     "targetValue": "목표값",
-    "method": "측정 방법"
+    "unit": "%, 명, 초 등 단위",
+    "description": "측정 방법과 설명"
   }
 ]
 
@@ -66,10 +71,11 @@ ${context}
 
 다음 JSON 형식으로 작성하세요:
 {
-  "userType": "사용자 유형",
-  "characteristics": "주요 특성 (2-3문장)",
-  "needs": "핵심 니즈 (2-3문장)",
-  "currentSolution": "현재 해결 방법",
+  "name": "이름",
+  "age": "나이",
+  "occupation": "직업",
+  "painPoints": ["페인포인트 1", "페인포인트 2"],
+  "needs": ["핵심 니즈 1", "핵심 니즈 2"],
   "scenario": "사용 시나리오 (3-4문장)"
 }
 
@@ -83,13 +89,20 @@ ${prdContent}
 
 다음 JSON 형식으로 검토 결과를 작성하세요:
 {
-  "score": 0-100 사이의 품질 점수,
+  "summary": "전체 리뷰 요약",
+  "qualityScore": {
+    "overall": 0,
+    "completeness": 0,
+    "clarity": 0,
+    "consistency": 0,
+    "specificity": 0
+  },
   "items": [
     {
-      "type": "error" | "warning" | "suggestion" | "positive",
-      "title": "피드백 제목",
-      "description": "상세 설명",
+      "type": "error" | "warning" | "suggestion",
       "section": "관련 섹션명"
+      "message": "상세 설명",
+      "suggestedText": "선택적 개선 문장"
     }
   ]
 }
@@ -101,4 +114,46 @@ ${prdContent}
 - 일관성 (섹션 간 정합성) 20%
 
 JSON만 출력하세요. 다른 텍스트는 포함하지 마세요.`;
+}
+
+export function getFeatureSuggestPrompt(context: unknown) {
+  return `다음 컨텍스트를 기반으로 핵심 기능 3-5개를 제안해주세요.
+
+${stringifyContext(context)}
+
+반드시 아래 JSON만 출력하세요:
+{
+  "coreFeatures": [
+    {
+      "title": "기능명",
+      "description": "기능 설명",
+      "priority": "must" | "should" | "could" | "wont",
+      "acceptanceCriteria": ["조건 1", "조건 2"],
+      "estimatedEffort": "예상 공수",
+      "dependencies": ["의존성 1"]
+    }
+  ]
+}`;
+}
+
+export function getScopeSuggestPrompt(context: unknown) {
+  return `다음 기능 및 범위 컨텍스트를 바탕으로 In Scope, Out of Scope, 마일스톤을 제안해주세요.
+
+${stringifyContext(context)}
+
+반드시 아래 JSON만 출력하세요:
+{
+  "inScope": "포함 범위",
+  "outOfScope": "미포함 범위",
+  "milestones": [
+    {
+      "title": "마일스톤명",
+      "description": "설명",
+      "targetDate": "YYYY-MM-DD",
+      "deliverables": ["산출물 1", "산출물 2"]
+    }
+  ],
+  "risks": "주요 리스크",
+  "dependencies": "주요 의존성"
+}`;
 }

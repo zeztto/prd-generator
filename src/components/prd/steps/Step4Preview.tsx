@@ -6,7 +6,6 @@ import { generatePRDMarkdown } from '@/lib/utils/markdown';
 import { Button } from '@/components/ui/button';
 import { Eye, Pencil } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 const TOC_ITEMS = [
   { id: 'sec-1', label: '1. 프로젝트 개요' },

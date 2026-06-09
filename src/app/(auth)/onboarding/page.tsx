@@ -14,14 +14,20 @@ export default function OnboardingPage() {
     role?: string;
     experience?: string;
   }) => {
-    await completeOnboarding({
-      termsAgreed: data.consent.terms,
-      privacyAgreed: data.consent.privacy,
-      marketingAgreed: data.consent.marketing,
-      jobTitle: data.role,
-      experience: data.experience,
-    });
-    router.push("/dashboard");
+    try {
+      await completeOnboarding({
+        termsAgreed: data.consent.terms,
+        privacyAgreed: data.consent.privacy,
+        marketingAgreed: data.consent.marketing,
+        jobTitle: data.role,
+        experience: data.experience,
+      });
+      router.push("/dashboard");
+    } catch (error) {
+      window.alert(
+        error instanceof Error ? error.message : "온보딩 처리에 실패했습니다.",
+      );
+    }
   };
 
   return (

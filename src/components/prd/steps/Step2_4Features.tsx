@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Plus, Sparkles, Loader2 } from 'lucide-react';
+import { aiService } from '@/lib/services/ai.service';
 import { usePRDStore } from '@/stores/prd.store';
 import { FeatureCard } from '@/components/prd/cards/FeatureCard';
 import { MoscowChart } from '@/components/prd/MoscowChart';
-import { mockAIService } from '@/lib/mock/services/ai.service';
 import { FeaturePriority, type Feature } from '@/types/prd.types';
 
 export function Step2_4Features() {
@@ -46,7 +46,7 @@ export function Step2_4Features() {
   const handleSuggestFeatures = async () => {
     setIsSuggesting(true);
     try {
-      const suggested = await mockAIService.suggestFeatures({
+      const suggested = await aiService.suggestFeatures({
         goals,
         targetUsers,
         solution,

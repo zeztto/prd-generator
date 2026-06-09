@@ -1,69 +1,31 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
+import {
+  EMPTY_BACKGROUND,
+  EMPTY_FEATURES,
+  EMPTY_GOALS,
+  EMPTY_PROJECT_SETUP,
+  EMPTY_QUALITY_SCORE,
+  EMPTY_SCOPE,
+  EMPTY_SOLUTION,
+  EMPTY_TARGET_USERS,
+  getQualityScoreFromOverall,
+} from '@/lib/prd/defaults';
+import { DocStatus } from '@/types/prd.types';
 import type {
   AIReviewResult,
-  BackgroundData,
-  DocStatus,
-  FeaturesData,
-  GoalsData,
   PRDDocument,
   PRDSummary,
-  ProjectSetupData,
   QualityScore,
+  BackgroundData,
+  FeaturesData,
+  GoalsData,
+  ProjectSetupData,
   ScopeData,
   SolutionData,
   TargetUsersData,
 } from '@/types/prd.types';
-
-// ── 섹션 초기값 ──
-
-const initialProjectSetup: ProjectSetupData = {
-  title: '',
-  description: '',
-  projectType: null,
-  platform: [],
-  targetMarket: null,
-};
-
-const initialBackground: BackgroundData = {
-  problemStatement: '',
-  currentSituation: '',
-};
-
-const initialGoals: GoalsData = {
-  businessGoals: '',
-  userGoals: '',
-  kpis: [],
-  successCriteria: '',
-};
-
-const initialTargetUsers: TargetUsersData = {
-  primaryUsers: '',
-  personas: [],
-};
-
-const initialFeatures: FeaturesData = {
-  coreFeatures: [],
-};
-
-const initialSolution: SolutionData = {
-  proposedSolution: '',
-};
-
-const initialScope: ScopeData = {
-  inScope: '',
-  outOfScope: '',
-  milestones: [],
-};
-
-const initialQualityScore: QualityScore = {
-  overall: 0,
-  completeness: 0,
-  clarity: 0,
-  consistency: 0,
-  specificity: 0,
-};
 
 // ── 스토어 타입 ──
 
@@ -72,6 +34,7 @@ interface PRDState {
   currentPRDId: string | null;
   currentStep: number;
   currentSubStep: number;
+  status: DocStatus;
 
   // 섹션 데이터
   projectSetup: ProjectSetupData;
@@ -147,17 +110,18 @@ export const usePRDStore = create<PRDStore>()(
       currentPRDId: null,
       currentStep: 1,
       currentSubStep: 0,
+      status: DocStatus.DRAFT,
 
-      projectSetup: initialProjectSetup,
-      background: initialBackground,
-      goals: initialGoals,
-      targetUsers: initialTargetUsers,
-      features: initialFeatures,
-      solution: initialSolution,
-      scope: initialScope,
+      projectSetup: { ...EMPTY_PROJECT_SETUP },
+      background: { ...EMPTY_BACKGROUND },
+      goals: { ...EMPTY_GOALS },
+      targetUsers: { ...EMPTY_TARGET_USERS },
+      features: { ...EMPTY_FEATURES },
+      solution: { ...EMPTY_SOLUTION },
+      scope: { ...EMPTY_SCOPE },
 
       reviewResult: null,
-      qualityScore: initialQualityScore,
+      qualityScore: { ...EMPTY_QUALITY_SCORE },
       isReviewing: false,
 
       prdList: [],
@@ -246,7 +210,7 @@ export const usePRDStore = create<PRDStore>()(
       // ── AI 검토 ──
 
       setReviewResult: (result) => {
-        set({ reviewResult: result, qualityScore: result.qualityScore });
+        set({ reviewResult: result, qualityScore: result.qualityScore, isDirty: true });
       },
 
       setIsReviewing: (isReviewing) => {
@@ -346,6 +310,7 @@ export const usePRDStore = create<PRDStore>()(
       loadPRD: (prd) => {
         set({
           currentPRDId: prd.id,
+          status: prd.status,
           projectSetup: prd.projectSetup,
           background: prd.background,
           goals: prd.goals,
@@ -354,10 +319,11 @@ export const usePRDStore = create<PRDStore>()(
           solution: prd.solution,
           scope: prd.scope,
           reviewResult: prd.reviewResult ?? null,
-          qualityScore: prd.reviewResult?.qualityScore ?? initialQualityScore,
+          qualityScore: prd.reviewResult?.qualityScore ?? getQualityScoreFromOverall(prd.qualityScore),
           currentStep: 1,
           currentSubStep: 0,
           isDirty: false,
+          lastSavedAt: prd.updatedAt,
         });
       },
 
@@ -366,15 +332,16 @@ export const usePRDStore = create<PRDStore>()(
           currentPRDId: null,
           currentStep: 1,
           currentSubStep: 0,
-          projectSetup: initialProjectSetup,
-          background: initialBackground,
-          goals: initialGoals,
-          targetUsers: initialTargetUsers,
-          features: initialFeatures,
-          solution: initialSolution,
-          scope: initialScope,
+          status: DocStatus.DRAFT,
+          projectSetup: { ...EMPTY_PROJECT_SETUP },
+          background: { ...EMPTY_BACKGROUND },
+          goals: { ...EMPTY_GOALS },
+          targetUsers: { ...EMPTY_TARGET_USERS },
+          features: { ...EMPTY_FEATURES },
+          solution: { ...EMPTY_SOLUTION },
+          scope: { ...EMPTY_SCOPE },
           reviewResult: null,
-          qualityScore: initialQualityScore,
+          qualityScore: { ...EMPTY_QUALITY_SCORE },
           isDirty: false,
           lastSavedAt: null,
         });
@@ -401,7 +368,7 @@ export const usePRDStore = create<PRDStore>()(
         return {
           title: state.projectSetup.title,
           description: state.projectSetup.description,
-          status: 'DRAFT' as DocStatus,
+          status: state.status,
           qualityScore: state.qualityScore.overall,
           projectSetup: state.projectSetup,
           background: state.background,
@@ -421,6 +388,7 @@ export const usePRDStore = create<PRDStore>()(
         currentPRDId: state.currentPRDId,
         currentStep: state.currentStep,
         currentSubStep: state.currentSubStep,
+        status: state.status,
         projectSetup: state.projectSetup,
         background: state.background,
         goals: state.goals,

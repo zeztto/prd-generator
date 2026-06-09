@@ -10,7 +10,7 @@ import { AIEnhanceButton } from '@/components/prd/AIEnhanceButton';
 import { AIEnhanceModal } from '@/components/prd/AIEnhanceModal';
 import { KPICard } from '@/components/prd/cards/KPICard';
 import { useMockAI } from '@/hooks/useMockAI';
-import { mockAIService } from '@/lib/mock/services/ai.service';
+import { aiService } from '@/lib/services/ai.service';
 import type { KPI } from '@/types/prd.types';
 
 export function Step2_2Goals() {
@@ -69,7 +69,7 @@ export function Step2_2Goals() {
   const handleSuggestKPIs = async () => {
     setIsSuggestingKPIs(true);
     try {
-      const suggested = await mockAIService.suggestKPIs({ background, goals });
+      const suggested = await aiService.suggestKPIs({ background, goals });
       updateGoals({ kpis: [...goals.kpis, ...suggested] });
     } finally {
       setIsSuggestingKPIs(false);

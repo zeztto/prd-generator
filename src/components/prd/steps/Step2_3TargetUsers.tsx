@@ -5,9 +5,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Plus, Sparkles, Loader2 } from 'lucide-react';
+import { aiService } from '@/lib/services/ai.service';
 import { usePRDStore } from '@/stores/prd.store';
 import { PersonaCard } from '@/components/prd/cards/PersonaCard';
-import { mockAIService } from '@/lib/mock/services/ai.service';
 import type { Persona } from '@/types/prd.types';
 
 export function Step2_3TargetUsers() {
@@ -44,7 +44,7 @@ export function Step2_3TargetUsers() {
   const handleGeneratePersona = async () => {
     setIsGenerating(true);
     try {
-      const persona = await mockAIService.generatePersona({
+      const persona = await aiService.generatePersona({
         targetUsers,
         background,
       });

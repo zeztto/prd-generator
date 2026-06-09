@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { prdService } from '@/lib/services/prd.service';
 import { usePRDStore } from '@/stores/prd.store';
 
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
@@ -19,14 +20,20 @@ export function useAutoSave(options: UseAutoSaveOptions = {}) {
   const statusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isDirty = usePRDStore((s) => s.isDirty);
+  const currentPRDId = usePRDStore((s) => s.currentPRDId);
   const markSaved = usePRDStore((s) => s.markSaved);
   const lastSavedAt = usePRDStore((s) => s.lastSavedAt);
 
-  const save = useCallback(() => {
+  const save = useCallback(async () => {
     setSaveStatus('saving');
     try {
-      // persist 미들웨어가 localStorage에 자동 저장하므로
-      // 여기서는 dirty 플래그만 정리
+      const store = usePRDStore.getState();
+      store.calculateQualityScore();
+
+      if (currentPRDId) {
+        await prdService.update(currentPRDId, store.getCurrentPRDData());
+      }
+
       markSaved();
       setSaveStatus('saved');
 
@@ -37,7 +44,7 @@ export function useAutoSave(options: UseAutoSaveOptions = {}) {
     } catch {
       setSaveStatus('error');
     }
-  }, [markSaved]);
+  }, [currentPRDId, markSaved]);
 
   useEffect(() => {
     if (!enabled || !isDirty) return;
@@ -48,7 +55,7 @@ export function useAutoSave(options: UseAutoSaveOptions = {}) {
     }
 
     timerRef.current = setTimeout(() => {
-      save();
+      void save();
     }, debounceMs);
 
     return () => {
@@ -69,6 +76,8 @@ export function useAutoSave(options: UseAutoSaveOptions = {}) {
   return {
     saveStatus,
     lastSavedAt,
-    saveNow: save,
+    saveNow: () => {
+      void save();
+    },
   };
 }

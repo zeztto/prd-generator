@@ -13,28 +13,73 @@ export default function LoginPage() {
   const router = useRouter();
   const login = useAuthStore((s) => s.login);
   const loginWithSocial = useAuthStore((s) => s.loginWithSocial);
+  const signup = useAuthStore((s) => s.signup);
+  const completeOnboarding = useAuthStore((s) => s.completeOnboarding);
+
+  const routeAfterAuth = (isOnboarded: boolean) => {
+    router.push(isOnboarded ? "/dashboard" : "/onboarding");
+  };
 
   const handleSocialLogin = async (
     provider: "google" | "github" | "kakao",
   ) => {
     if (provider === "kakao") {
-      console.log("Kakao login not yet supported");
+      window.alert("카카오 로그인은 아직 지원하지 않습니다.");
       return;
     }
-    await loginWithSocial(provider);
-    router.push("/dashboard");
+
+    try {
+      const user = await loginWithSocial(provider);
+      routeAfterAuth(user.isOnboarded);
+    } catch (error) {
+      window.alert(
+        error instanceof Error ? error.message : "소셜 로그인에 실패했습니다.",
+      );
+    }
   };
 
   const handleSubmit = async (data: { email: string; password: string }) => {
-    await login(data);
-    router.push("/dashboard");
+    try {
+      const user = await login(data);
+      routeAfterAuth(user.isOnboarded);
+    } catch (error) {
+      window.alert(
+        error instanceof Error ? error.message : "로그인에 실패했습니다.",
+      );
+    }
   };
 
   const handleTestLogin = async () => {
-    await login({ email: "test@prd.ai", password: "Test1234!" });
-    // 온보딩 스킵
-    useAuthStore.setState({ isOnboarded: true });
-    router.push("/dashboard");
+    try {
+      let user;
+
+      try {
+        user = await login({ email: "test@prd.ai", password: "Test1234!" });
+      } catch {
+        user = await signup({
+          name: "테스트 사용자",
+          email: "test@prd.ai",
+          password: "Test1234!",
+          confirmPassword: "Test1234!",
+        });
+      }
+
+      if (!user.isOnboarded) {
+        user = await completeOnboarding({
+          termsAgreed: true,
+          privacyAgreed: true,
+          marketingAgreed: false,
+          jobTitle: "Product Manager",
+          experience: "3년 이상",
+        });
+      }
+
+      routeAfterAuth(user.isOnboarded);
+    } catch (error) {
+      window.alert(
+        error instanceof Error ? error.message : "테스트 로그인에 실패했습니다.",
+      );
+    }
   };
 
   return (

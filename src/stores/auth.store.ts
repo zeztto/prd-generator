@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
+import { authService } from '@/lib/services/auth.service';
 import type { LoginData, OnboardingData, SignupData, SocialProvider, User } from '@/types/auth.types';
 
 interface AuthState {
@@ -9,17 +10,19 @@ interface AuthState {
   isLoading: boolean;
   isOnboarded: boolean;
   error: string | null;
+  hasHydrated: boolean;
+  isBootstrapping: boolean;
 }
 
 interface AuthActions {
-  login: (data: LoginData) => Promise<void>;
-  loginWithSocial: (provider: SocialProvider) => Promise<void>;
-  signup: (data: SignupData) => Promise<void>;
-  logout: () => void;
-  completeOnboarding: (data: OnboardingData) => Promise<void>;
-  setUser: (user: User) => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
+  login: (data: LoginData) => Promise<User>;
+  loginWithSocial: (provider: SocialProvider) => Promise<User>;
+  signup: (data: SignupData) => Promise<User>;
+  logout: () => Promise<void>;
+  completeOnboarding: (data: OnboardingData) => Promise<User>;
+  refreshSession: () => Promise<User | null>;
+  setUser: (user: User | null) => void;
+  setHasHydrated: (hasHydrated: boolean) => void;
   clearError: () => void;
 }
 
@@ -31,6 +34,8 @@ const initialState: AuthState = {
   isLoading: false,
   isOnboarded: false,
   error: null,
+  hasHydrated: false,
+  isBootstrapping: true,
 };
 
 export const useAuthStore = create<AuthStore>()(
@@ -41,93 +46,141 @@ export const useAuthStore = create<AuthStore>()(
       login: async (data: LoginData) => {
         set({ isLoading: true, error: null });
         try {
-          // Mock 구현을 서비스 레이어에서 호출
-          const { mockAuthService } = await import('@/lib/mock/services/auth.service');
-          const response = await mockAuthService.login(data);
+          const response = await authService.login(data);
           set({
             user: response.user,
             isAuthenticated: true,
             isOnboarded: response.user.isOnboarded,
             isLoading: false,
+            isBootstrapping: false,
           });
+          return response.user;
         } catch (err) {
+          const message = err instanceof Error ? err.message : '로그인에 실패했습니다.';
           set({
             isLoading: false,
-            error: err instanceof Error ? err.message : '로그인에 실패했습니다.',
+            error: message,
+            isBootstrapping: false,
           });
+          throw err instanceof Error ? err : new Error(message);
         }
       },
 
       loginWithSocial: async (provider: SocialProvider) => {
         set({ isLoading: true, error: null });
         try {
-          const { mockAuthService } = await import('@/lib/mock/services/auth.service');
-          const response = await mockAuthService.loginWithSocial(provider);
+          const response = await authService.loginWithSocial(provider);
           set({
             user: response.user,
             isAuthenticated: true,
             isOnboarded: response.user.isOnboarded,
             isLoading: false,
+            isBootstrapping: false,
           });
+          return response.user;
         } catch (err) {
+          const message = err instanceof Error ? err.message : '소셜 로그인에 실패했습니다.';
           set({
             isLoading: false,
-            error: err instanceof Error ? err.message : '소셜 로그인에 실패했습니다.',
+            error: message,
+            isBootstrapping: false,
           });
+          throw err instanceof Error ? err : new Error(message);
         }
       },
 
       signup: async (data: SignupData) => {
         set({ isLoading: true, error: null });
         try {
-          const { mockAuthService } = await import('@/lib/mock/services/auth.service');
-          const response = await mockAuthService.signup(data);
+          const response = await authService.signup(data);
           set({
             user: response.user,
             isAuthenticated: true,
-            isOnboarded: false,
+            isOnboarded: response.user.isOnboarded,
             isLoading: false,
+            isBootstrapping: false,
           });
+          return response.user;
         } catch (err) {
+          const message = err instanceof Error ? err.message : '회원가입에 실패했습니다.';
           set({
             isLoading: false,
-            error: err instanceof Error ? err.message : '회원가입에 실패했습니다.',
+            error: message,
+            isBootstrapping: false,
           });
+          throw err instanceof Error ? err : new Error(message);
         }
       },
 
-      logout: () => {
-        set(initialState);
+      logout: async () => {
+        set({ isLoading: true, error: null });
+        try {
+          await authService.logout();
+        } finally {
+          set({
+            ...initialState,
+            hasHydrated: true,
+            isBootstrapping: false,
+          });
+        }
       },
 
       completeOnboarding: async (data: OnboardingData) => {
         set({ isLoading: true, error: null });
         try {
-          const { mockAuthService } = await import('@/lib/mock/services/auth.service');
-          const user = await mockAuthService.completeOnboarding(data);
+          const user = await authService.completeOnboarding(data);
           set({
             user,
             isOnboarded: true,
+            isAuthenticated: true,
             isLoading: false,
+            isBootstrapping: false,
           });
+          return user;
         } catch (err) {
+          const message = err instanceof Error ? err.message : '온보딩 처리에 실패했습니다.';
           set({
             isLoading: false,
-            error: err instanceof Error ? err.message : '온보딩 처리에 실패했습니다.',
+            error: message,
+            isBootstrapping: false,
           });
+          throw err instanceof Error ? err : new Error(message);
         }
       },
 
-      setUser: (user: User) => {
-        set({ user, isAuthenticated: true, isOnboarded: user.isOnboarded });
+      refreshSession: async () => {
+        set({ isBootstrapping: true, error: null });
+        try {
+          const user = await authService.getCurrentUser();
+          set({
+            user,
+            isAuthenticated: Boolean(user),
+            isOnboarded: user?.isOnboarded ?? false,
+            isBootstrapping: false,
+          });
+          return user;
+        } catch (err) {
+          set({
+            user: null,
+            isAuthenticated: false,
+            isOnboarded: false,
+            error: err instanceof Error ? err.message : '세션을 확인할 수 없습니다.',
+            isBootstrapping: false,
+          });
+          return null;
+        }
       },
 
-      setLoading: (loading: boolean) => {
-        set({ isLoading: loading });
+      setUser: (user: User | null) => {
+        set({
+          user,
+          isAuthenticated: Boolean(user),
+          isOnboarded: user?.isOnboarded ?? false,
+        });
       },
 
-      setError: (error: string | null) => {
-        set({ error });
+      setHasHydrated: (hasHydrated: boolean) => {
+        set({ hasHydrated });
       },
 
       clearError: () => {
@@ -142,6 +195,9 @@ export const useAuthStore = create<AuthStore>()(
         isAuthenticated: state.isAuthenticated,
         isOnboarded: state.isOnboarded,
       }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     },
   ),
 );
